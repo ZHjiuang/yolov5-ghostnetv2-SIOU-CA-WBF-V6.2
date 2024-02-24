@@ -100,7 +100,7 @@ def wbf(prediction,
         boxes_list = list(np.c_[x1, y1, x2, y2])
 
         boxes, scores, labels = weighted_boxes_fusion([boxes_list], [scores_list], [labels_list], weights=None, iou_thr=iou_thres,
-                                                      skip_box_thr=0.0, conf_type='Bayes')
+                                                      skip_box_thr=0.0, conf_type='avg')
         # boxes, scores, labels = weighted_boxes_fusion([list(boxes)], [list(scores)], [list(labels)], weights=None,
         #                                               iou_thr=iou_thres,
         #                                               skip_box_thr=0.0, conf_type='max')
