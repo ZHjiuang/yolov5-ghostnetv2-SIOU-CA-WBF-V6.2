@@ -7,10 +7,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-PIC_ROOT = "F:/datas/PROCESS AND DATAS/own_data/OWNFATA/own_datas/yolo/train/img/"
-LAB_ROOT = "F:/datas/PROCESS AND DATAS/own_data/OWNFATA/own_datas/yolo/train/label/"  # LAB_ROOT = ""
-save_pic_path = "C:/Users/ZJC/Desktop/plus/"
-save_lab_path = "C:/Users/ZJC/Desktop/lab/"  # save_lab_path = ""
+
+
+PIC_ROOT = "/train/img/"
+LAB_ROOT = "/train/label/"  # LAB_ROOT = ""
+save_pic_path = "/plus/"
+save_lab_path = "/lab/"  # save_lab_path = ""
 category_id_to_name = {0: 'tree', 1: 'person', 2: 'supporter'}
 
 project = 'runs/detect'
@@ -63,11 +65,11 @@ def visualize(image, bboxes, category_ids, category_id_to_name):
 
 
 for pic in os.listdir(PIC_ROOT):
-    n = os.path.splitext(pic)[0]  # 去掉后缀
+    n = os.path.splitext(pic)[0]  
     # with open(n + '.txt', 'r') as f:
     #     lab = f.read()
     if LAB_ROOT != '':
-        lab = np.loadtxt(LAB_ROOT + n + '.txt', dtype=np.float32, delimiter=' ')  # 获取标签
+        lab = np.loadtxt(LAB_ROOT + n + '.txt', dtype=np.float32, delimiter=' ')  
         lab1 = np.mat(lab)
         lab2 = lab1[:, 1:]
         bboxes = lab2.tolist()
@@ -85,29 +87,27 @@ for pic in os.listdir(PIC_ROOT):
     trans = A.Compose([
         A.HorizontalFlip(p=0.5),
         A.VerticalFlip(p=0.5),
-        A.OneOf([A.GaussNoise(),  # 将高斯噪声应用于输入图像。
-                 ], p=0.3),  # 应用选定变换的概率
+        A.OneOf([A.GaussNoise(),], p=0.3),  
         A.OneOf([
-            A.MotionBlur(p=0.2),  # 使用随机大小的内核将运动模糊应用于输入图像。
-            A.MedianBlur(blur_limit=3, p=0.1),  # 中值滤波
-            A.Blur(blur_limit=3, p=0.1),  # 使用随机大小的内核模糊输入图像。
+            A.MotionBlur(p=0.2),  
+            A.MedianBlur(blur_limit=3, p=0.1), 
+            A.Blur(blur_limit=3, p=0.1),  
         ], p=0.3),
         A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.2, rotate_limit=45, p=0.2),
-        # 随机应用仿射变换：平移，缩放和旋转输入
+        
         A.OneOf([
-            A.RandomBrightnessContrast(p=0.2),  # 随机明亮对比度
-            A.RandomRain(brightness_coefficient=0.9, drop_width=1, blur_value=5, p=1),  # 雨
-            A.RandomSunFlare(flare_roi=(0, 0, 1, 0.5), angle_lower=0.5, p=1),  # 光
-            A.RandomSnow(brightness_coeff=2.5, snow_point_lower=0.3, snow_point_upper=0.5, p=1),  # 雪
+            A.RandomBrightnessContrast(p=0.2),  
+            A.RandomRain(brightness_coefficient=0.9, drop_width=1, blur_value=5, p=1),  
+            A.RandomSunFlare(flare_roi=(0, 0, 1, 0.5), angle_lower=0.5, p=1),  
+            A.RandomSnow(brightness_coeff=2.5, snow_point_lower=0.3, snow_point_upper=0.5, p=1),  
             A.RandomShadow(num_shadows_lower=1, num_shadows_upper=1, shadow_dimension=5, shadow_roi=(0, 0.5, 1, 1),
-                           p=1),  # 阴影
-            A.RandomFog(fog_coef_lower=0.7, fog_coef_upper=0.8, alpha_coef=0.1, p=1),  # 雾
+                           p=1),  
+            A.RandomFog(fog_coef_lower=0.7, fog_coef_upper=0.8, alpha_coef=0.1, p=1),  
         ], p=0.3)],
         bbox_params=A.BboxParams(format='yolo', label_fields=['category_ids']))
 
     for i in range(3):
         transformed = trans(image=image, bboxes=bboxes, category_ids=category_ids)
-        # 可视化
         if LAB_ROOT != '':
             visualize(
                 transformed['image'],
@@ -115,9 +115,8 @@ for pic in os.listdir(PIC_ROOT):
                 transformed['category_ids'],
                 category_id_to_name,
             )
-        # 保存图像，标签
-        # img_trans = trans(image=image)['image']  # 字典类型
         img_trans = transformed['image']
+        img_trans = cv2.cvtColor(img_trans, cv2.COLOR_RGB2BGR)
         if LAB_ROOT != '':
             bb = transformed['bboxes']
             ca = transformed['category_ids']
@@ -131,8 +130,8 @@ for pic in os.listdir(PIC_ROOT):
             # np.reshape(bc1,len(ca))
             # bc2 = bc1.reshape(len(ca), 5)
 
-            np.savetxt(f'{save_lab_path}{n}{i}.txt', labs, fmt='%.6f')  # 写入标签
-        cv2.imwrite(f'{save_pic_path}{n}{i}.jpg', img_trans)  # 写入图片
+            np.savetxt(f'{save_lab_path}{n}{i}.txt', labs, fmt='%.6f')  
+        cv2.imwrite(f'{save_pic_path}{n}{i}.jpg', img_trans) 
 
 # image = cv2.imread('data/images/bus.jpg')
 #
