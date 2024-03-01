@@ -163,14 +163,14 @@ class ConvLayer(nn.Module):
     """Convolution layer (conv + bn + relu)."""
 
     def __init__(
-        self,
-        in_channels,
-        out_channels,
-        kernel_size,
-        stride=1,
-        padding=0,
-        groups=1,
-        IN=False
+            self,
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride=1,
+            padding=0,
+            groups=1,
+            IN=False
     ):
         super(ConvLayer, self).__init__()
         self.conv = nn.Conv2d(
@@ -294,13 +294,13 @@ class ChannelGate(nn.Module):
     """A mini-network that generates channel-wise gates conditioned on input tensor."""
 
     def __init__(
-        self,
-        in_channels,
-        num_gates=None,
-        return_gates=False,
-        gate_activation='sigmoid',
-        reduction=16,
-        layer_norm=False
+            self,
+            in_channels,
+            num_gates=None,
+            return_gates=False,
+            gate_activation='sigmoid',
+            reduction=2,
+            layer_norm=False
     ):
         super(ChannelGate, self).__init__()
         if num_gates is None:
@@ -355,12 +355,12 @@ class OSBlock(nn.Module):
     """Omni-scale feature learning block."""
 
     def __init__(
-        self,
-        in_channels,
-        out_channels,
-        IN=False,
-        bottleneck_reduction=4,
-        **kwargs
+            self,
+            in_channels,
+            out_channels,
+            IN=False,
+            bottleneck_reduction=4,
+            **kwargs
     ):
         super(OSBlock, self).__init__()
         mid_channels = out_channels // bottleneck_reduction
@@ -406,7 +406,8 @@ class OSBlock(nn.Module):
             out = self.IN(out)
         return F.relu(out)
 
-class C3OS(C3):  
+
+class C3OS(C3):
     # C3 module with OSBlock()
     def __init__(self, c1, c2, n=1, shortcut=True, g=1, e=0.5):
         super().__init__(c1, c2, n, shortcut, g, e)
